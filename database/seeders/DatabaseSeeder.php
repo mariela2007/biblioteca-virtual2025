@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             CienciaSeeder::class,
             ArteSeeder::class,
             MaterialSeeder::class,
-
+            CategoriaSeeder::class,
         ]);
     }
 

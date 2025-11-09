@@ -13,7 +13,7 @@
     }
   </style>
 </head>
-<body class="text-center min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] animate-brief-glow">
+<body class="text-center min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] animate-brief-glow flex flex-col">
 
   <!-- Header con fondo negro -->
   <header class="bg-black bg-opacity-80 px-7
@@ -26,19 +26,102 @@
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
   </svg>
 </a>
+  <!-- BOTONES PRINCIPALES -->
+    <a href="{{ url('/biblioteca') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Inicio
+    </a>
+    <!-- BOTÓN CATEGORÍAS -->
+    <div class="relative">
+      <button id="categoriasBtn" type="button"
+         class="inline-flex items-center gap-1 px-5 py-2 bg-black text-white font-medium shadow
+                border-l-4 border-yellow-400
+                hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+        Categorías
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
 
-    <!-- Resultado de búsqueda como input visual -->
-    <div class="w-full md:w-1/2">
-      <div class="flex items-center bg-white rounded overflow-hidden shadow-md">
-        <div class="px-4 py-2 bg-yellow-400 text-black font-bold">
-          Resultado
-        </div>
-        <input type="text" readonly value="Resultados de búsqueda para '{{ $busqueda }}'" class="w-full px-4 py-2 text-black focus:outline-none" />
+      <!-- SUBMENÚ CATEGORÍAS -->
+      <div id="categoriasDropdown"
+           class="hidden absolute top-full left-0 w-52 bg-black text-white rounded-md shadow-lg mt-2 z-50 transition-all duration-200">
+        @php
+          $categorias = [
+              'enciclopedia' => 'Enciclopedia',
+              'escritores' => 'Escritores',
+              'comic' => 'Historietas',
+              'gramatica' => 'Lenguaje',
+              'fisica' => 'Ciencia',
+              'arte' => 'Arte'
+          ];
+        @endphp
+        @foreach($categorias as $slug => $nombre)
+        <a href="{{ route('categoria.mostrar', $slug) }}"
+           class="block px-5 py-2 hover:bg-yellow-400 hover:text-black transition text-lg duration-200">
+           {{ $nombre }}
+        </a>
+        @endforeach
       </div>
     </div>
-  </header>
+    <!-- LIBROS -->
+    <a href="{{ route('libros.todos') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Libros
+    </a>
+ <!-- MATERIALES -->
+    <a href="{{ url('/materiales') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Materiales
+    </a>
+<!-- REPORTES -->
+    <a href="{{ url('/reportes') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Reportes
+    </a>
+   <!-- Resultado de búsqueda como input visual -->
+<div class="w-full md:w-1/2">
+  <div class="flex items-center bg-white rounded overflow-hidden shadow-md">
+    <div class="px-4 py-2 bg-yellow-400 text-black font-bold text-sm">
+      Resultado
+    </div>
+    <input type="text" 
+           readonly 
+           value="Resultados de búsqueda para '{{ $busqueda }}'" 
+           class="w-full px-4 py-2 text-black text-sm focus:outline-none" />
+  </div>
+</div>
 
-  <main class="p-8">
+  </header>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const categoriasBtn = document.getElementById("categoriasBtn");
+  const categoriasDropdown = document.getElementById("categoriasDropdown");
+
+  categoriasBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    categoriasDropdown.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!categoriasBtn.contains(event.target) && !categoriasDropdown.contains(event.target)) {
+      categoriasDropdown.classList.add("hidden");
+    }
+  });
+});
+</script>
+<main class="p-8 flex-grow">
+
   @if($libros->count())
 
     {{-- Si hay un solo libro --}}
@@ -50,7 +133,14 @@
            hover:scale-105 transform transition duration-300 
            max-w-lg w-full border border-white/50 
            hover:border-white focus:border-white focus:ring-4 focus:ring-white">
-            {{-- Imagen --}}
+          
+
+            {{-- Título --}}
+            <h2 class="text-xl font-bold mb-2 text-blue-200">{{ $libro->titulo }}</h2>
+            {{-- Autor --}}
+
+            <p class="mb-1 text-blue-100"><span class="font-semibold">Autor:</span> {{ $libro->autor }}</p>
+  {{-- Imagen --}}
             @if($libro->imagen)
               <img src="{{ asset('imagenes/' . $libro->imagen) }}" alt="{{ $libro->titulo }}" class="w-full h-48 object-cover rounded mb-3 border border-[#475569]">
             @else
@@ -58,12 +148,8 @@
                 Sin imagen
               </div>
             @endif
-
-            {{-- Título y autor --}}
-            <h2 class="text-xl font-bold mb-2 text-blue-200">{{ $libro->titulo }}</h2>
-            <p class="mb-1 text-blue-100"><span class="font-semibold">Autor:</span> {{ $libro->autor }}</p>
+                {{-- Descripción --}}
             <p class="mb-2 text-slate-200">{{ $libro->descripcion }}</p>
-
             {{-- Botones --}}
             @if($libro->archivo)
               <div class="flex justify-center gap-4 mt-4">
@@ -98,6 +184,14 @@
          hover:scale-105 transform transition duration-300 
          border border-white/40 hover:border-white 
          focus:border-white focus:ring-2 focus:ring-white">
+          
+
+            {{-- Título  --}}
+            <h2 class="text-lg font-bold mb-2 text-blue-200">{{ $libro->titulo }}</h2>
+              {{-- Autor --}}
+            <p class="mb-1 text-blue-100"><span class="font-medium">Autor:</span> {{ $libro->autor }}</p>
+            
+
             {{-- Imagen --}}
             @if($libro->imagen)
               <img src="{{ asset('imagenes/' . $libro->imagen) }}" alt="{{ $libro->titulo }}" class="w-full h-48 object-cover rounded mb-3 border border-[#475569]">
@@ -107,9 +201,7 @@
               </div>
             @endif
 
-            {{-- Título y autor --}}
-            <h2 class="text-lg font-bold mb-2 text-blue-200">{{ $libro->titulo }}</h2>
-            <p class="mb-1 text-blue-100"><span class="font-medium">Autor:</span> {{ $libro->autor }}</p>
+                {{-- Descripción --}}
             <p class="text-sm text-slate-200">{{ $libro->descripcion }}</p>
 
             {{-- Botones --}}
@@ -142,7 +234,10 @@
     <p class="text-center text-slate-500 mt-10">No se encontraron libros con esa búsqueda.</p>
   @endif
 </main>
-
+  <!-- FOOTER -->
+    <footer class="bg-[#0f172a] text-white text-center py-6 text-sm">
+        © {{ date('Y') }} Biblioteca Virtual — Hecho con 💙 para aprender
+    </footer>
 </body>
 </html>
 

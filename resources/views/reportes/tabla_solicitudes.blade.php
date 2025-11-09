@@ -48,6 +48,8 @@
 </td>
 
                         <td class="px-5 py-3 flex justify-center gap-2">
+                                          @if(auth()->check() && auth()->user()->role === 'admin')
+
                             <!-- Ver -->
                             <a href="{{ route('solicitudes.show', $solicitud->id) }}" 
                                class="bg-blue-600/80 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs font-semibold">
@@ -62,6 +64,9 @@
                                     🗑️
                                 </button>
                             </form>
+                            @else
+                                <span class="text-gray-400 text-xs italic">📌 Sistema</span>
+                            @endif
                         </td>
                     </tr>
                 @empty

@@ -1,12 +1,12 @@
 @extends('layouts.old_app')
-
+@section('titulo-navbar','📚 Solicitar')
+@section('subtitulo-navbar','Rellena la información para comenzar tu aventura lectora')
 @section('content')
-<div class="max-w-lg mx-auto bg-gray-900 text-white p-6 shadow rounded-lg mt-10">
-    <h2 class="text-2xl font-bold mb-6 text-center">Solicitar Libro</h2>
+<div class="max-w-lg mx-auto mt-1 px-8 py-10 bg-gray-900 rounded-3xl border-2 border-white/80 shadow-[0_0_15px_#ffffff60] text-white">
 
     {{-- Mensaje de confirmación --}}
     @if(session('success'))
-        <div class="bg-green-200 text-green-800 p-2 rounded mb-4 text-center">
+        <div class="bg-green-700 text-white p-2 rounded mb-4 text-center">
             {{ session('success') }}
         </div>
     @endif
@@ -60,15 +60,19 @@
             </div>
         </div>
 
-        {{-- Botones --}}
-        <div class="flex justify-between mt-4">
-            <button type="submit" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-semibold">
-                Enviar Solicitud
-            </button>
-            <a href="{{ url()->previous() }}" class="text-gray-400 hover:text-gray-200 px-4 py-2 rounded-lg">
-                Cancelar
-            </a>
-        </div>
+       {{-- Botones --}}
+<div class="flex justify-between mt-4">
+    <button type="submit" 
+            class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-md">
+        Enviar Solicitud
+    </button>
+
+    <a href="{{ url()->previous() }}" 
+       class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-md">
+       Cancelar
+    </a>
+</div>
+
     </form>
 </div>
 @endsection

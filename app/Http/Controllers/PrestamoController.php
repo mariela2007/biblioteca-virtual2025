@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Prestamo;
@@ -8,16 +9,17 @@ use App\Models\Libro;
 
 class PrestamoController extends Controller
 {
-      // Lista todos los préstamos del usuario logueado
+    // Lista todos los préstamos del usuario logueado
     public function index(Request $request)
     {
         $query = Prestamo::with('libro')
-            ->whereHas('users', fn($q) => $q->where('user_id', auth()->id()));
+            ->whereHas('users', fn($q) => $q->where('users.id', auth()->id()));
 
         // Filtros opcionales
         if ($request->categoria) {
             $query->whereHas('libro', fn($q) => $q->where('categoria', $request->categoria));
         }
+
         if ($request->titulo) {
             $query->whereHas('libro', fn($q) => $q->where('titulo', 'like', "%{$request->titulo}%"));
         }
@@ -30,7 +32,7 @@ class PrestamoController extends Controller
     // Mostrar formulario para crear préstamo
     public function create()
     {
-        $libros = Libro::where('disponible', '>', 0)->get(); // Solo libros con ejemplares disponibles
+        $libros = Libro::where('disponible', '>', 0)->get(); // Solo libros disponibles
         return view('prestamos.create', compact('libros'));
     }
 
@@ -69,8 +71,8 @@ class PrestamoController extends Controller
         // Asociar al usuario logueado
         $prestamo->users()->attach(auth()->id());
 
-        // Reducir el número de ejemplares disponibles
-        $libro->disponible -= 1;
+        // Reducir disponibilidad, asegurando que no baje de 0
+        $libro->disponible = max($libro->disponible - 1, 0);
         $libro->save();
 
         return redirect()->back()->with('success', 'Préstamo agregado correctamente.');
@@ -88,9 +90,9 @@ class PrestamoController extends Controller
             'fecha_devolucion' => now(),
         ]);
 
-        // Aumentar disponibilidad del libro
         $libro = $prestamo->libro;
-        $libro->disponible += 1;
+        // Aumentar disponibilidad sin pasar el límite de cantidad
+        $libro->disponible = min($libro->disponible + 1, $libro->cantidad);
         $libro->save();
 
         return redirect()->back()->with('success', 'Libro devuelto correctamente.');
@@ -103,7 +105,7 @@ class PrestamoController extends Controller
 
         // Si no fue devuelto, devolver automáticamente el libro
         if (!$prestamo->devuelto && $libro) {
-            $libro->disponible += 1;
+            $libro->disponible = min($libro->disponible + 1, $libro->cantidad);
             $libro->save();
         }
 
@@ -119,7 +121,7 @@ class PrestamoController extends Controller
     // Mostrar formulario de edición
     public function edit(Prestamo $prestamo)
     {
-        $libros = Libro::all(); // mostrar todos los libros
+        $libros = Libro::all();
         return view('prestamos.edit', compact('prestamo', 'libros'));
     }
 
@@ -127,43 +129,44 @@ class PrestamoController extends Controller
     public function update(Request $request, Prestamo $prestamo)
     {
         $request->validate([
-        'nombre_alumno'   => 'required|string|max:255',
-        'apellido_alumno' => 'required|string|max:255',
-        'grado'           => 'required|string|max:50',
-        'seccion'         => 'required|string|max:50',
-        'turno'           => 'required|in:mañana,tarde',
-        'libro_id'        => 'required|exists:libros,id',
-        'fecha_prestamo'  => 'required|date',
-        'fecha_devolucion'=> 'nullable|date|after_or_equal:fecha_prestamo',
-    ]);
+            'nombre_alumno'   => 'required|string|max:255',
+            'apellido_alumno' => 'required|string|max:255',
+            'grado'           => 'required|string|max:50',
+            'seccion'         => 'required|string|max:50',
+            'turno'           => 'required|in:mañana,tarde',
+            'libro_id'        => 'required|exists:libros,id',
+            'fecha_prestamo'  => 'required|date',
+            'fecha_devolucion'=> 'nullable|date|after_or_equal:fecha_prestamo',
+        ]);
 
-    $libroAnterior = $prestamo->libro;
+        $libroAnterior = $prestamo->libro;
 
-    // Si el usuario cambia de libro en la edición
-    if ($request->libro_id != $prestamo->libro_id) {
-        // Devolver ejemplar al libro anterior (si no estaba devuelto)
-        if (!$prestamo->devuelto && $libroAnterior) {
-            $libroAnterior->disponible += 1;
-            $libroAnterior->save();
+        // Si cambia de libro
+        if ($request->libro_id != $prestamo->libro_id) {
+            // Devolver ejemplar al libro anterior (si no estaba devuelto)
+            if (!$prestamo->devuelto && $libroAnterior) {
+                $libroAnterior->disponible = min($libroAnterior->disponible + 1, $libroAnterior->cantidad);
+                $libroAnterior->save();
+            }
+
+            // Restar ejemplar al nuevo libro
+            $nuevoLibro = Libro::findOrFail($request->libro_id);
+            if ($nuevoLibro->disponible <= 0) {
+                return redirect()->back()->with('error', 'No hay ejemplares disponibles de este libro.');
+            }
+
+            $nuevoLibro->disponible = max($nuevoLibro->disponible - 1, 0);
+            $nuevoLibro->save();
         }
 
-        // Restar ejemplar al nuevo libro
-        $nuevoLibro = Libro::findOrFail($request->libro_id);
-        if ($nuevoLibro->disponible <= 0) {
-            return redirect()->back()->with('error', 'No hay ejemplares disponibles de este libro.');
-        }
-        $nuevoLibro->disponible -= 1;
-        $nuevoLibro->save();
+        // Actualizar datos del préstamo
+        $prestamo->update($request->all());
+
+        return redirect()->route('prestamos.index')
+                         ->with('success', 'Préstamo actualizado correctamente.');
     }
 
-    // Actualizar datos del préstamo
-    $prestamo->update($request->all());
-
-    return redirect()->route('prestamos.index')
-                     ->with('success', 'Préstamo actualizado correctamente.');
-    }
-
-    // Préstamos próximos a vencer (2 días o menos)
+    // Préstamos próximos a vencer
     public function proximosAVencer()
     {
         $hoy = now();

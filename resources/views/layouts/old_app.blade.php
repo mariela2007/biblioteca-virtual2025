@@ -21,8 +21,8 @@
 
 <body class="text-gray-800 flex flex-col min-h-screen">
 
-    <!-- NAVBAR -->
-    <nav class="relative bg-[#0f172a] text-white shadow-md py-7 px-4 flex flex-col sm:flex-row items-start sm:items-center">
+    <!-- NAVBAR --><nav class="relative bg-black text-white shadow-md py-7 px-4 flex flex-col sm:flex-row items-start sm:items-center">
+
         
        @hasSection('boton-volver')
     @yield('boton-volver')

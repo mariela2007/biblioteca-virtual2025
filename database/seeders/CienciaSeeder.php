@@ -45,7 +45,7 @@ Libro::firstOrCreate(
     [
         'autor' => 'Paramericana Editorial LTDA',
         'imagen' => 'dinosaurios.png',
-        'descripcion' => 'La historia de los dinosaurios es parte de la historia de nuestro planeta y por eso es importante conocerla. Con este libro, aprenderás más sobre estos animales sorprendentes.',
+        'descripcion' => 'La historia de los dinosaurios es parte de la historia de nuestro planeta y por eso es importante conocerla.',
         'categoria' => 'fisica',
         'archivo'=> 'Dinosaurios los ultimos gigantes.pdf',
        'cantidad' => 48,
@@ -55,14 +55,14 @@ Libro::firstOrCreate(
 
 // Ciencia de la Vida - Biología
 Libro::firstOrCreate(
-    ['titulo' => 'Ciencia de la Vida: Biología'],
+    ['titulo' => 'El Cuerpo Humano'],
     [
         'autor' => 'Editorial Oceano Peruana S.A',
-        'imagen' => 'biologia.jpg',
-        'descripcion' => 'Libro de biología general y ciencia de la vida.',
+        'imagen' => 'cuerpo_humano.jpg',
+        'descripcion' => 'Libro ilustrado que explica de forma clara y entretenida el funcionamiento del cuerpo humano, sus órganos y sistemas.',
         'categoria' => 'fisica',
         'cantidad' => 48,
-
+        'archivo' => 'cuerpo_humano.pdf',
     ]
 );
 
@@ -77,6 +77,29 @@ Libro::firstOrCreate(
         'archivo'=> 'Las plantas y sus partes.pdf',
         'cantidad' => 36,
 
+    ]
+);
+
+Libro::firstOrCreate(
+    ['titulo' => 'La biodiversidad del Perú'],
+    [
+        'autor' => 'Sociedad Nacional de Minería, Petróleo y Energía',
+        'imagen' => 'biodiversidad_peru.jpg',
+        'descripcion' => 'Cartel educativo que muestra la rica biodiversidad del Perú, incluyendo diversas especies de flora y fauna.',
+        'categoria' => 'fisica',
+        'archivo' => 'La_biodiversidad_del_Peru.pdf',
+        'cantidad' => 20,
+    ]
+);
+Libro::firstOrCreate(
+    ['titulo' => 'El gas natural'],
+    [
+        'autor' => 'Sociedad Nacional de Minería, Petróleo y Energía',
+        'imagen' => 'El_gas_natural.jpg', // asegúrate de tener esta imagen en tu proyecto
+        'descripcion' => 'Libro educativo sobre el gas natural y su importancia como recurso energético en el Perú.',
+        'categoria' => 'fisica',
+        'archivo' => 'El_gas_natural.pdf', // si tienes el PDF
+        'cantidad' => 20,
     ]
 );
     }

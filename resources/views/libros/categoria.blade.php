@@ -43,64 +43,156 @@
 <body class="text-center min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] animate-brief-glow">
 
   
-<!-- Header negro -->
+
+<!-- HEADER NEGRO -->
 <header class="flex flex-col sm:flex-row items-center sm:justify-start py-7 px-4 bg-black bg-opacity-80 shadow-md mb-10 sm:space-x-12">
-    
-  <!-- Botón Volver solo icono -->
+
+  <!-- BOTÓN VOLVER -->
   <a href="{{ url('/biblioteca') }}" class="mb-4 sm:mb-0">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white hover:text-yellow-300 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
     </svg>
   </a>
 
-  <!-- Contenedor para título y botón -->
-  <div class="flex flex-col sm:flex-row items-center sm:gap-4 w-full sm:w-auto">
+  <!-- TÍTULO Y BOTONES -->
+  <div class="flex flex-col sm:flex-row items-center sm:gap-4 w-full sm:w-auto flex-wrap">
+
+    <!-- TÍTULO -->
     <h1 class="text-2xl md:text-3xl font-medium text-gray-100 tracking-wide border-l-4 border-yellow-400 pl-3 mb-3 sm:mb-0">
       📚 {{ ucfirst($categoria) }}
     </h1>
-@auth
-    @if(auth()->user()->role === 'admin')
-      <!-- Botón Agregar libro -->
-      <a href="{{ route('libros.create') }}"
-         class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+
+    <!-- BOTONES ADMIN (OCULTOS SI NO ES ADMIN, PERO ESPACIO RESERVADO) -->
+    <div class="flex flex-row items-center gap-4">
+      @auth
+        @if(auth()->user()->role === 'admin')
+          <!-- BOTÓN AGREGAR LIBRO -->
+          <a href="{{ route('libros.create') }}"
+             class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+                    border-l-4 border-yellow-400
+                    hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-5 h-5"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4v16m8-8H4" />
+            </svg>
+            Agregar libro
+          </a>
+
+          <!-- BOTÓN HACER PRÉSTAMO -->
+          <a href="{{ route('prestamos.create') }}"
+             class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+                    border-l-4 border-yellow-400
+                    hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-5 h-5"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Hacer préstamo
+          </a>
+        @else
+          <!-- Espacio vacío (para mantener el diseño igual) -->
+          <div class="hidden sm:block w-[210px] h-[40px]"></div>
+          <div class="hidden sm:block w-[190px] h-[40px]"></div>
+        @endif
+      @endauth
+    </div>
+
+    <!-- BOTONES COMUNES -->
+    <a href="{{ url('/biblioteca') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Inicio
+    </a>
+
+    <!-- BOTÓN CATEGORÍAS -->
+    <div class="relative">
+      <button id="categoriasBtn" type="button"
+         class="inline-flex items-center gap-1 px-5 py-2 bg-black text-white font-medium shadow
                 border-l-4 border-yellow-400
                 hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
-        <!-- Icono de + -->
-        <svg xmlns="http://www.w3.org/2000/svg"
-             class="w-5 h-5"
-             fill="none"
-             viewBox="0 0 24 24"
+        Categorías
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4v16m8-8H4" />
+                d="M19 9l-7 7-7-7" />
         </svg>
-        Agregar libro
-      </a>
-    @endif
-@endauth
+      </button>
 
-
-@auth
-    @if(auth()->user()->role === 'admin') <!-- o el rol que corresponda -->
-        <!-- Botón Hacer préstamo con icono y texto -->
-        <a href="{{ route('prestamos.create') }}"
-           class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
-                  border-l-4 border-yellow-400
-                  hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
-          <!-- Icono préstamo -->
-          <svg xmlns="http://www.w3.org/2000/svg"
-               class="w-5 h-5"
-               fill="none"
-               viewBox="0 0 24 24"
-               stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Hacer préstamo
+      <!-- SUBMENÚ CATEGORÍAS -->
+      <div id="categoriasDropdown"
+           class="hidden absolute top-full left-0 w-52 bg-black text-white rounded-md shadow-lg mt-2 z-50 transition-all duration-200">
+        @php
+          $categorias = [
+              'enciclopedia' => 'Enciclopedia',
+              'escritores' => 'Escritores',
+              'comic' => 'Historietas',
+              'gramatica' => 'Lenguaje',
+              'fisica' => 'Ciencia',
+              'arte' => 'Arte'
+          ];
+        @endphp
+        @foreach($categorias as $slug => $nombre)
+        <a href="{{ route('categoria.mostrar', $slug) }}"
+           class="block px-5 py-2 hover:bg-yellow-400 hover:text-black transition text-lg duration-200">
+           {{ $nombre }}
         </a>
-    @endif
-@endauth
+        @endforeach
+      </div>
+    </div>
 
+    <!-- LIBROS -->
+    <a href="{{ route('libros.todos') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Libros
+    </a>
+
+    <!-- MATERIALES -->
+    <a href="{{ url('/materiales') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Materiales
+    </a>
+
+    <!-- REPORTES -->
+    <a href="{{ url('/reportes') }}"
+       class="inline-flex items-center gap-2 px-5 py-2 bg-black text-white font-medium shadow
+              border-l-4 border-yellow-400
+              hover:bg-yellow-400 hover:text-black rounded-sm transition-colors duration-200">
+      Reportes
+    </a>
+
+  </div>
+</header>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const categoriasBtn = document.getElementById("categoriasBtn");
+  const categoriasDropdown = document.getElementById("categoriasDropdown");
+
+  categoriasBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    categoriasDropdown.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!categoriasBtn.contains(event.target) && !categoriasDropdown.contains(event.target)) {
+      categoriasDropdown.classList.add("hidden");
+    }
+  });
+});
+</script>
 
 
 </header>
@@ -243,3 +335,12 @@
     </div>
   @endforeach
 </div>
+<!-- Footer -->
+<footer class="mt-12 bg-black bg-opacity-80 text-white py-6 shadow-inner">
+    <div class="max-w-6xl mx-auto px-4 flex justify-center">
+     <!-- Créditos o mensaje final -->
+   <p class="text-sm text-white text-center">
+  © {{ date('Y') }} Biblioteca Virtual — Hecho con 💙 para aprender
+</p>
+    </div>
+</footer>

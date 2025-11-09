@@ -1,34 +1,40 @@
+
 @extends('layouts.old_app')
 
-@section('titulo-navbar', '📚 Lista de Préstamos') 
+@section('titulo-navbar')
+<h1 class="text-xl md:text-2xl font-semibold text-white drop-shadow-md">
+    📚 Lista de Préstamos
+</h1>
+
+@endsection
 
 @section('subtitulo-navbar')
-    <p class="text-gray-300">Consulta y gestiona los préstamos de libros</p>
+    <p class="text-gray-400 text-xs md:text-sm">Consulta y gestiona los préstamos de libros</p>
 @endsection
 
 @section('filtros-navbar')
-    <form method="GET" class="flex flex-wrap items-center gap-4 mt-0 w-full">
-        <!-- Buscar por título (más largo) -->
-        <div class="relative">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-2 text-xs">
+    <form method="GET" class="flex flex-col sm:flex-row flex-wrap items-center gap-2 w-full md:w-auto">
+        <!-- Buscar -->
+        <div class="relative w-full sm:w-auto">
             <input type="text" name="titulo" value="{{ request('titulo') }}" 
-                   placeholder="Buscar por título..."
-                   class="pl-10 pr-4 py-2 w-[400px] rounded-lg 
-                          bg-gray-900/80 text-white placeholder-gray-400 
-                          border border-gray-700 focus:outline-none transition">
-            <!-- Icono lupa -->
+                   placeholder="Buscar libro o título..."
+                   class="pl-8 pr-3 py-1.5 w-full sm:w-[250px] md:w-[300px] lg:w-[340px] 
+                          rounded bg-gray-900/80 text-white placeholder-gray-400 
+                          border border-gray-700 focus:outline-none focus:ring-0 transition text-sm">
             <svg xmlns="http://www.w3.org/2000/svg" 
-                 class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                 class="h-4 w-4 absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400"
                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                       d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
             </svg>
         </div>
 
-        <!-- Categoría (más larga también) -->
+        <!-- Categoría -->
         <select name="categoria" 
-                        class="px-4 py-2 w-[250px] rounded-lg bg-black text-white 
-               border border-white/40 focus:outline-none focus:border-white 
-               focus:ring-0 appearance-none">
+                class="px-3 py-2 w-full sm:w-[150px] md:w-[180px] lg:w-[200px] 
+                       rounded bg-black text-white border border-white/30 
+                       focus:outline-none focus:border-white focus:ring-0 text-xs">
             <option value="">Categoría...</option>
             <option value="Enciclopedia" {{ request('categoria') == 'Enciclopedia' ? 'selected' : '' }}>Enciclopedia</option>
             <option value="Escritores" {{ request('categoria') == 'Escritores' ? 'selected' : '' }}>Escritores</option>
@@ -40,46 +46,41 @@
 
         <!-- Botón -->
         <button type="submit" 
-                class="px-6 py-2 rounded-lg border border-yellow-400 text-yellow-400 
+                class="px-3 py-1 w-full sm:w-auto rounded border border-yellow-400 text-yellow-400 
                        font-semibold hover:bg-yellow-400 hover:text-black 
-                       transition shadow-md">
+                       transition text-xs">
             Filtrar
         </button>
     </form>
-<!-- Notificaciones de préstamos -->
-<div class="relative">
-    <button id="btnNotificaciones" class="relative">
-        <!-- Ícono campana -->
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             class="h-7 w-7 text-yellow-400" fill="none" 
-             viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M15 17h5l-1.405-1.405M19 13V9a7 7 0 10-14 0v4l-1.405 1.405M4 17h16M9 21h6"/>
-        </svg>
 
-        <!-- Contador dinámico -->
-        <span id="contadorNotificaciones"
-              class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1 hidden">
-        </span>
-    </button>
+    <!-- Notificaciones -->
+    <div class="relative self-center md:self-auto">
+        <button id="btnNotificaciones" class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="h-5 w-5 text-yellow-400" fill="none" 
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M15 17h5l-1.405-1.405M19 13V9a7 7 0 10-14 0v4l-1.405 1.405M4 17h16M9 21h6"/>
+            </svg>
+            <span id="contadorNotificaciones"
+                  class="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] rounded-full px-[3px] hidden"></span>
+        </button>
 
-    <!-- Dropdown -->
-    <div id="listaNotificaciones" 
-         class="hidden absolute right-0 mt-2 w-72 bg-gray-800 text-white rounded-lg shadow-lg p-3 z-50">
-        <p class="font-bold text-sm mb-2 border-b border-gray-600 pb-1">⏳ Préstamos próximos a vencer</p>
-        <ul id="itemsNotificaciones" class="max-h-60 overflow-y-auto text-sm space-y-1"></ul>
+        <!-- Dropdown -->
+        <div id="listaNotificaciones" 
+             class="hidden absolute right-0 mt-1 w-56 bg-gray-800 text-white rounded-lg shadow-lg p-2 z-50 text-[11px]">
+            <p class="font-bold text-[11px] mb-1 border-b border-gray-600 pb-1">⏳ Préstamos por vencer</p>
+            <ul id="itemsNotificaciones" class="max-h-40 overflow-y-auto space-y-1"></ul>
+        </div>
     </div>
 </div>
-
-
-
 @endsection
 
 
     @section('content')
 
 <!-- Contenedor de préstamos, con flexbox y salto de línea -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 justify-items-center mt-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mt-6">
 
 
     @forelse($prestamos as $prestamo)
@@ -205,9 +206,11 @@
 
         </div>
     @empty
-        <div class="w-full text-center py-6 text-gray-400 text-sm col-span-3">
-            No se encontraron préstamos que coincidan con tu búsqueda.
-        </div>
+   
+    <p class="col-span-6 text-center text-gray-400">  No se encontraron préstamos que coincidan con tu búsqueda.</p>
+
+
+
     @endforelse
 </div>
 

@@ -13,89 +13,98 @@ class LibroSeeder extends Seeder
     public function run(): void
     {
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 1'],
+            ['titulo' => 'Ciencias de la Vida'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia1.jpg',
-                'descripcion' => 'Descripción tomo 1',
+                'descripcion' => 'Tomo dedicado a la biología, anatomía y estudio de los seres vivos.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'ciencias_de_la_vida.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 2'],
+            ['titulo' => 'Informática y Ciencias de la Producción'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia2.jpg',
-                'descripcion' => 'Descripción tomo 2',
+                'descripcion' => 'Tomo sobre informática, tecnología y procesos productivos.',
                 'categoria' => 'enciclopedia',
+                'cantidad' => 1,
+                'archivo' => 'informatica_y_ciencias_de_la_produccion.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 3'],
+            ['titulo' => 'Matemática, Física y Química'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia3.jpg',
-                'descripcion' => 'Descripción tomo 3',
+                'descripcion' => 'Tomo centrado en las ciencias exactas y sus aplicaciones prácticas.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'matematica_fisica_y_quimica.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 4'],
+            ['titulo' => 'Ciencias de la Tierra'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia4.jpg',
-                'descripcion' => 'Descripción tomo 4',
+                'descripcion' => 'Tomo que aborda geología, geografía, ecología y medio ambiente.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'ciencias_de_la_tierra.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 5'],
+            ['titulo' => 'Historia de la Humanidad'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia5.jpg',
-                'descripcion' => 'Descripción tomo 5',
+                'descripcion' => 'Tomo que recorre los acontecimientos más importantes del mundo antiguo y moderno.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'historia_de_la_humanidad.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 6'],
+            ['titulo' => 'Historia de las Artes'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia6.jpg',
-                'descripcion' => 'Descripción tomo 6',
+                'descripcion' => 'Tomo dedicado a la evolución de las artes visuales, música y teatro.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'historia_de_las_artes.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 7'],
+            ['titulo' => 'Literatura Universal y Castellano'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia7.jpg',
-                'descripcion' => 'Descripción tomo 7',
+                'descripcion' => 'Tomo que recopila obras literarias universales y la lengua castellana.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'literatura_universal_y_castellano.pdf',
             ]
         );
-        
+
         Libro::firstOrCreate(
-            ['titulo' => 'Enciclopedia Tomo 8'],
+            ['titulo' => 'Ciencias de la Sociedad'],
             [
                 'autor' => 'Zamora Editores Ltda.',
                 'imagen' => 'enciclopedia8.jpg',
-                'descripcion' => 'Descripción tomo 8',
+                'descripcion' => 'Tomo que trata sobre sociología, economía, política y comportamiento humano.',
                 'categoria' => 'enciclopedia',
                 'cantidad' => 1,
+                'archivo' => 'ciencias_de_la_sociedad.pdf',
             ]
         );
         

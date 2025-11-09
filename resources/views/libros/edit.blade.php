@@ -42,7 +42,7 @@
                     class="w-full mt-1 rounded-lg bg-gray-700 border border-gray-600 text-white px-4 py-2 shadow-sm focus:ring-yellow-400 focus:border-yellow-400">
                     <option value="">-- Selecciona una categoría --</option>
                     <option value="enciclopedia" {{ $libro->categoria == 'enciclopedia' ? 'selected' : '' }}>Enciclopedia</option>
-    <option value="Escritores"   {{ $libro->categoria == 'Escritores' ? 'selected' : '' }}>Escritores</option>
+    <option value="Escritores"   {{ $libro->categoria == 'escritores' ? 'selected' : '' }}>Escritores</option>
     <option value="comic"        {{ $libro->categoria == 'comic' ? 'selected' : '' }}>Historietas</option>
     <option value="gramatica"    {{ $libro->categoria == 'gramatica' ? 'selected' : '' }}>Lenguaje</option>
     <option value="fisica"       {{ $libro->categoria == 'fisica' ? 'selected' : '' }}>Ciencia</option>
@@ -61,7 +61,6 @@
             <img src="{{ asset('imagenes/' . $libro->imagen) }}" alt="Imagen actual" class="mt-2 w-40 rounded shadow">
         @endif
     </div>
-
     <!-- PDF -->
     <div>
         <label for="archivo" class="block text-sm font-medium text-blue-200">Archivo PDF</label>
@@ -72,8 +71,6 @@
         @endif
     </div>
 </div>
-
-
             <!-- Descripción (ocupa tres columnas) -->
             <div class="md:col-span-3">
                 <label for="descripcion" class="block text-sm font-medium text-blue-200">Descripción</label>
@@ -82,7 +79,6 @@
             </div>
         </div>
 <!-- cantidad -->
-
 <div>
     <label for="cantidad" class="block text-sm font-medium text-blue-200">Cantidad de libros</label>
     <input type="number" name="cantidad" id="cantidad"
@@ -105,6 +101,4 @@
 
     </form>
 </div>
-
-
 @endsection

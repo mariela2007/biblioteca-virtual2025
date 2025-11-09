@@ -1,6 +1,6 @@
 <div class="container mx-auto py-10 px-6 text-white">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-black-400">📚 Reporte de Materiales</h2>
+        <h2 class="text-2xl font-bold text-black-400">📚 Reporte de libros</h2>
 
         <!-- Botones Exportar -->
         <div class="space-x-3">
@@ -24,6 +24,8 @@
                     <th class="px-5 py-3 text-left">Autor</th>
                     <th class="px-5 py-3 text-left">Categoría</th>
                     <th class="px-5 py-3 text-center">Cantidad</th>
+                 <th class="px-5 py-3 text-center">Disponible</th> <!-- ✅ NUEVA COLUMNA -->
+
                     <th class="px-5 py-3 text-left">Descripción</th>
                     <th class="px-5 py-3 text-center">Acciones</th>
                 </tr>
@@ -48,15 +50,25 @@
                         </td>
                         
                         <!-- Cantidad con colores según stock -->
-                        <td class="px-5 py-3 text-center">
-                            @if($libro->cantidad == 0)
-                                <span class="bg-red-600/20 text-red-400 px-2 py-1 rounded-lg text-sm font-semibold">Agotado</span>
-                            @elseif($libro->cantidad < 5)
-                                <span class="bg-yellow-600/20 text-yellow-400 px-2 py-1 rounded-lg text-sm font-semibold">{{ $libro->cantidad }} 🔸 Bajo</span>
-                            @else
-                                <span class="bg-cyan-600/20 text-cyan-400 px-2 py-1 rounded-lg text-sm font-semibold">{{ $libro->cantidad }}</span>
-                            @endif
-                        </td>
+                        <td class="px-5 py-3 text-center font-semibold">
+    @if($libro->cantidad == 0)
+        <span class="text-red-500">{{ $libro->cantidad }}</span>
+    @elseif($libro->cantidad < 5)
+        <span class="text-yellow-400">{{ $libro->cantidad }}</span>
+    @else
+        <span class="text-cyan-400">{{ $libro->cantidad }}</span>
+    @endif
+</td>
+     <!-- ✅ DISPONIBLE (nuevo campo) -->
+                    <td class="px-5 py-3 text-center">
+                        @if($libro->disponible == 0)
+                            <span class="bg-red-600/20 text-red-400 px-2 py-1 rounded-lg text-sm font-semibold">No disponible</span>
+                        @elseif($libro->disponible < 5)
+                            <span class="bg-yellow-600/20 text-yellow-400 px-2 py-1 rounded-lg text-sm font-semibold">{{ $libro->disponible }} 🔸 Pocos</span>
+                        @else
+                            <span class="bg-emerald-600/20 text-emerald-400 px-2 py-1 rounded-lg text-sm font-semibold">{{ $libro->disponible }}</span>
+                        @endif
+                    </td>
 
                         <td class="px-5 py-3">{{ $libro->descripcion ?? 'Sin descripción' }}</td>
 

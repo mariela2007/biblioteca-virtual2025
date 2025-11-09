@@ -13,7 +13,7 @@ class ArteSeeder extends Seeder
     public function run(): void
     {
         Libro::firstOrCreate(
-            ['titulo' => 'Oragami Recreativo'],
+            ['titulo' => 'Origami Recreativo'],
             [
                 'autor' => 'Martha Beatriz Calle Ordoñez',
                 'imagen' => 'origami.png',

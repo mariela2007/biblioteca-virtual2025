@@ -80,45 +80,66 @@ $request->validate([
         $libro = Libro::findOrFail($id);
         return view('libros.edit', compact('libro'));
     }
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'autor' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'categoria' => 'required|string',
-            'imagen' => 'nullable|image',
-            'archivo' => 'nullable|mimes:pdf',
-             'cantidad' => 'required|integer|min:0',
-        ]);
-        $libro = Libro::findOrFail($id);
-        $libro->titulo = $request->titulo;
-        $libro->autor = $request->autor;
-        $libro->descripcion = $request->descripcion;
-        $libro->categoria = $request->categoria;
-        // Ajustar cantidad y disponible
-    $diferencia = $request->cantidad - $libro->cantidad; 
+   public function update(Request $request, $id)
+{
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'autor' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'categoria' => 'required|string',
+        'imagen' => 'nullable|image',
+        'archivo' => 'nullable|mimes:pdf',
+        'cantidad' => 'required|integer|min:0',
+    ]);
+
+    $libro = Libro::findOrFail($id);
+
+    // Datos básicos
+    $libro->titulo = $request->titulo;
+    $libro->autor = $request->autor;
+    $libro->descripcion = $request->descripcion;
+    $libro->categoria = $request->categoria;
+
+    // Ajustar cantidad y disponible
+    $diferencia = $request->cantidad - $libro->cantidad;
     $libro->cantidad = $request->cantidad;
     $libro->disponible = max(0, $libro->disponible + $diferencia);
     $libro->disponible = min($libro->disponible, $libro->cantidad);
-        // Actualizar imagen
-        if ($request->hasFile('avatar')) {
-            $imagen = $request->file('imagen');
-            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            $imagen->move(public_path('imagenes'), $nombreImagen);
-            $libro->imagen = $nombreImagen;
+
+    // ✅ Actualizar imagen (y borrar la anterior si se reemplaza)
+    if ($request->hasFile('imagen')) {
+
+        // Si existe una imagen anterior, la borramos
+        if ($libro->imagen && file_exists(public_path('imagenes/' . $libro->imagen))) {
+            unlink(public_path('imagenes/' . $libro->imagen));
         }
-        // Actualizar PDF
-        if ($request->hasFile('archivo')) {
-            $archivo = $request->file('archivo');
-            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
-            $archivo->move(public_path('archivos'), $nombreArchivo);
-            $libro->archivo = $nombreArchivo;
-        }
-        $libro->save();
-        return redirect()->route('categoria.mostrar', $libro->categoria)
-                         ->with('success', 'Libro actualizado con éxito.');
+
+        $imagen = $request->file('imagen');
+        $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+        $imagen->move(public_path('imagenes'), $nombreImagen);
+        $libro->imagen = $nombreImagen;
     }
+
+    // ✅ Actualizar PDF (y borrar el anterior si se reemplaza)
+    if ($request->hasFile('archivo')) {
+
+        // Si existe un PDF anterior, lo borramos
+        if ($libro->archivo && file_exists(public_path('archivos/' . $libro->archivo))) {
+            unlink(public_path('archivos/' . $libro->archivo));
+        }
+
+        $archivo = $request->file('archivo');
+        $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+        $archivo->move(public_path('archivos'), $nombreArchivo);
+        $libro->archivo = $nombreArchivo;
+    }
+
+    $libro->save();
+
+    return redirect()->route('categoria.mostrar', $libro->categoria)
+                     ->with('success', 'Libro actualizado con éxito.');
+}
+
     public function destroy($id)
     {
         $libro = Libro::findOrFail($id);
@@ -152,6 +173,6 @@ public function mostrarTodos()
 
  public function exportExcel()
     {
-        return Excel::download(new LibrosExport, 'materiales.xlsx');
+        return Excel::download(new LibrosExport, 'Libros.xlsx');
     }
 }

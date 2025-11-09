@@ -17,10 +17,10 @@ class LenguajeSeeder extends Seeder
             [
                 'autor' => 'Editorial ClASA.A', // o el autor real si lo sabes
                 'imagen' => 'gramatica1.png',
-                'descripcion' => 'Primer tomo de la serie El mundo de la gramática.',
+                'descripcion' => 'Introduce las bases de la gramática española, incluyendo tipos de palabras y reglas básicas de ortografía.',
                 'categoria' => 'gramatica',
-                'archivo'=> '  Gramatica tomo 1.pdf',
-                 'cantidad' => 1,
+                'archivo'=> 'Gramatica_tomo_1.pdf',
+                'cantidad' => 1,
 
 
             ]
@@ -31,9 +31,9 @@ class LenguajeSeeder extends Seeder
             [
                 'autor' => 'Editorial ClASA.A',
                 'imagen' => 'gramatica2.png',
-                'descripcion' => 'Segundo tomo de la serie El mundo de la gramática.',
+                'descripcion' => 'Explica el uso correcto de tiempos verbales y estructuras oracionales con ejemplos prácticos.',
                 'categoria' => 'gramatica',
-                'archivo'=> '  Gramatica tomo 2.pdf',
+                'archivo'=> 'Gramatica_tomo_2.pdf',
                 'cantidad' => 1,
 
             ]
@@ -44,9 +44,9 @@ class LenguajeSeeder extends Seeder
             [
                 'autor' => 'Editorial ClASA.A',
                 'imagen' => 'gramatica3.png',
-                'descripcion' => 'Tercer tomo de la serie El mundo de la gramática.',
+                'descripcion' => 'Profundiza en la concordancia gramatical y el análisis sintáctico de oraciones complejas.',
                 'categoria' => 'gramatica',
-                'archivo'=> '  Gramatica tomo 3.pdf',
+                'archivo'=> 'Gramatica_tomo_3.pdf',
                 'cantidad' => 1,
 
               
@@ -58,9 +58,9 @@ class LenguajeSeeder extends Seeder
             [
                 'autor' => 'Editorial ClASA.A',
                 'imagen' => 'gramatica4.png',
-                'descripcion' => 'Cuarto tomo de la serie El mundo de la gramática.',
+                'descripcion' => 'Incluye ejercicios avanzados de redacción y análisis de textos para reforzar la expresión escrita.',
                 'categoria' => 'gramatica',
-                'archivo'=> '  Gramatica tomo 4.pdf',
+                'archivo'=> 'Gramatica_tomo_4.pdf',
                 'cantidad' => 1,
 
             ]

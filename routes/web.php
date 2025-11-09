@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReporteController; // <-- esta línea es nueva
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\SolicitudController;
+use App\Http\Controllers\ChatBotController;
 
 #use App\Http\Controllers\NovedadController;
 
@@ -70,7 +71,8 @@ Route::resource('materiales', MaterialController::class)->parameters([
 
     
 ]);
-
+Route::get('/reportes/export/pdf', [ReporteController::class, 'exportPdf'])->name('reportes.export.pdf');
+Route::get('/reportes/export/excel', [ReporteController::class, 'exportExcel'])->name('reportes.export.excel');
 #Route::get('/novedades', [NovedadController::class, 'index'])->name('novedades.index');
 
 #Route::post('/novedades', [NovedadController::class, 'store'])->name('novedades.store');
@@ -132,6 +134,7 @@ Route::get('/solicitudes/{solicitud}', [SolicitudController::class, 'show'])
 
 });
 Route::delete('/solicitudes/{solicitud}', [SolicitudController::class, 'destroy'])->name('solicitudes.destroy');
+Route::post('/chatbot', [ChatBotController::class, 'responder'])->name('chatbot');
 
 // Rutas de autenticación (Breeze)
 require __DIR__.'/auth.php';

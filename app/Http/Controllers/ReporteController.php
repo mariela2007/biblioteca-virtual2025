@@ -13,6 +13,8 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use App\Models\Libro;
 use App\Models\Prestamo;
 use App\Models\Material; 
+use App\Models\Categoria; // 🔹 Asegúrate de importar el modelo
+use App\Exports\ReporteLibrosExport;
 
 
 class ReporteController extends Controller
@@ -25,8 +27,6 @@ $pdf = PDF::loadView('reportes.libros', compact('libros'));
         return $pdf->download('libros.pdf');
     }
 
-
-
     // PDF de préstamos
     public function prestamosPDF()
     {
@@ -37,20 +37,35 @@ $pdf = PDF::loadView('reportes.prestamos', compact('prestamos'));
     }
 
 
-
-    public function index()
-
-    {
-    $prestamos = Prestamo::with('libro')
+public function index(Request $request)
+{
+     $prestamos = Prestamo::with('libro')
         ->whereHas('users', fn($q) => $q->where('user_id', Auth::id()))
-        ->get(); // solo del usuario logueado
+        ->get();
 
-    $libros = Libro::all();
+    $categorias = Categoria::all();      // Para el select de categorías
+
+    $libros = Libro::all();               // Para la tarjeta de libros (total, sin filtrar)
     $materiales = Material::all();
-    $solicitudes = Solicitud::with(['user','libro'])->get(); // 👈 agregar esta línea
+    $solicitudes = Solicitud::with(['user','libro'])->get();
 
-    return view('reportes.index', compact('prestamos','libros','materiales', 'solicitudes'));
-    }
+    // Solo libros filtrados por categoría seleccionada
+    $categoriaSeleccionada = $request->categoria_id ?? null;
+    $librosPorCategoria = Libro::with('categoria')
+        ->when($categoriaSeleccionada, fn($q) => $q->where('categoria_id', $categoriaSeleccionada))
+        ->get();
+
+    return view('reportes.index', compact(
+        'prestamos',
+        'libros',
+        'materiales',
+        'solicitudes',
+        'categorias',
+        'categoriaSeleccionada',
+        'librosPorCategoria'
+    ));
+}
+
 
 public function prestamosExcel()
 {
@@ -68,4 +83,28 @@ public function solicitudesExcel()
 {
     return Excel::download(new SolicitudesExport, 'solicitudes.xlsx');
 }
+
+public function exportPdf(Request $request)
+    {
+        $categoriaSeleccionada = $request->input('categoria_id');
+
+$libros = Libro::with('categoria')
+    ->when($categoriaSeleccionada, fn($q) => $q->where('categoria_id', $categoriaSeleccionada))
+    ->get();
+
+        // Aquí generarías tu PDF con DOMPDF o Snappy
+        // Ejemplo simple:
+        $pdf = \PDF::loadView('reportes.pdf', compact('libros'));
+
+        return $pdf->download('reporte_categoria.pdf');
+    }
+
+    // ✅ 3. Exportar Excel filtrando por categoría
+    public function exportExcel(Request $request)
+{
+    $categoriaId = $request->categoria_id;
+
+    return Excel::download(new ReporteLibrosExport($categoriaId), 'libros.xlsx');
+}
+
 }

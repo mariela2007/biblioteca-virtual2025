@@ -13,6 +13,8 @@
   <!-- Iconos Heroicons -->
   <script src="https://unpkg.com/heroicons@2.0.13/24/outline/index.js"></script>
 
+<!-- ✅ CSRF TOKEN (DEBE IR AQUÍ) -->
+  
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -22,6 +24,9 @@
     .bounce {
       animation: bounce 2s infinite;
     }
+
+ 
+
 
     @keyframes bounce {
       0%, 100% {
@@ -36,11 +41,12 @@
 
 body {
     margin: 0;
-    height: 100vh;
+    min-height: 100vh; 
     background: linear-gradient(to bottom, #0f172a, #1e3a8a);
-    overflow: hidden;
+    overflow-x: hidden; /* solo oculta el scroll horizontal */
     font-family: 'Arial', sans-serif;
     position: relative;
+    
   }
 
   /* Animación de caída continua */
@@ -82,6 +88,7 @@ body {
     will-change: transform;
   }
 
+  
   </style>
 </head>
 
@@ -197,6 +204,9 @@ body {
         Solicitudes
     </a>
      @endif
+
+     @if(auth()->user()->role === 'admin')
+
           <!-- Préstamos -->
           <a href="{{ route('prestamos.index') }}" 
              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-sm">
@@ -207,6 +217,7 @@ body {
             </svg>
             Préstamos
           </a>
+@endif
 
           <!-- PDF Préstamos -->
          {{-- 
@@ -372,9 +383,6 @@ body {
 </script>
 
 
-  
-
-   
 </header>
 
 <script>
@@ -398,7 +406,6 @@ body {
 
 </section>
 
-  
 
 <!-- Buscador profesional azul oscuro -->
 <div class="mt-12 flex justify-center">
@@ -427,12 +434,12 @@ body {
 
   @php
     $categorias = [
-      ['nombre' => 'Enciclopedia', 'imagen' => 'imagen0.png', 'ruta' => 'enciclopedia', 'degradado' => 'bg-gradient-to-r from-pink-500 to-pink-700'],
-      ['nombre' => 'Escritores', 'imagen' => 'imagen1.png', 'ruta' => 'escritores', 'degradado' => 'bg-gradient-to-r from-emerald-500 to-emerald-700'],
-      ['nombre' => 'Historietas', 'imagen' => 'k7.png', 'ruta' => 'comic', 'degradado' => 'bg-gradient-to-r from-purple-600 to-purple-800'],
-      ['nombre' => 'Lenguaje', 'imagen' => 'pok.png', 'ruta' => 'gramatica', 'degradado' => 'bg-gradient-to-r from-orange-500 to-orange-700'],
-      ['nombre' => 'Ciencia', 'imagen' => 'poio.png', 'ruta' => 'fisica', 'degradado' => 'bg-gradient-to-r from-sky-500 to-sky-700'],
-      ['nombre' => 'Artes', 'imagen' => 'dj.png', 'ruta' => 'arte', 'degradado' => 'bg-gradient-to-r from-rose-500 to-rose-700'],
+      ['nombre' => 'Enciclopedia', 'imagen' => 'enciclopedia.png', 'ruta' => 'enciclopedia', 'degradado' => 'bg-gradient-to-r from-pink-500 to-pink-700'],
+      ['nombre' => 'Escritores', 'imagen' => 'escritores.png', 'ruta' => 'escritores', 'degradado' => 'bg-gradient-to-r from-emerald-500 to-emerald-700'],
+      ['nombre' => 'Historietas', 'imagen' => 'comic.png', 'ruta' => 'comic', 'degradado' => 'bg-gradient-to-r from-purple-600 to-purple-800'],
+      ['nombre' => 'Lenguaje', 'imagen' => 'gramatica.png', 'ruta' => 'gramatica', 'degradado' => 'bg-gradient-to-r from-orange-500 to-orange-700'],
+      ['nombre' => 'Ciencia', 'imagen' => 'fisica.png', 'ruta' => 'fisica', 'degradado' => 'bg-gradient-to-r from-sky-500 to-sky-700'],
+      ['nombre' => 'Artes', 'imagen' => 'arte.png', 'ruta' => 'arte', 'degradado' => 'bg-gradient-to-r from-rose-500 to-rose-700'],
     ];
   @endphp
 
@@ -465,7 +472,144 @@ body {
   @endforeach
 </div>
 
+<section class="max-w-7xl mx-auto px-6 py-16 flex flex-col gap-32">
+  @php
+    $informacion = [
+        [
+            'titulo' => 'Tecnología en la Educación',
+            'texto' => 'La tecnología facilita el acceso al conocimiento, permite aprender desde cualquier lugar y hace la educación más interactiva. Nuestra biblioteca virtual aprovecha estas herramientas para acercarte a los libros y recursos de manera rápida y moderna.',
+            'imagen' => 'tecnologia.png',
+            'degradado' => 'bg-gradient-to-r from-blue-500 to-blue-700'
+        ],
+        [
+            'titulo' => 'Beneficios de la Lectura',
+            'texto' => 'Leer mejora la concentración, creatividad y vocabulario. Además, te ayuda a comprender mejor el mundo y a tomar decisiones más inteligentes. Descubre libros que potencien tu aprendizaje y desarrollo personal.',
+            'imagen' => 'lectura.png',
+            'degradado' => 'bg-gradient-to-r from-green-500 to-green-700'
+        ],
+        [
+            'titulo' => 'Explora Nuevos Conocimientos',
+            'texto' => 'Nuestra biblioteca virtual permite descubrir temas variados: ciencias, arte, historia, tecnología y mucho más. Cada libro es una oportunidad para aprender algo nuevo y ampliar tus horizontes.',
+            'imagen' => 'conocimiento.png',
+            'degradado' => 'bg-gradient-to-r from-purple-500 to-purple-700'
+        ],
+    ];
+  @endphp
 
+ <style>
+  .animar-scroll {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 2.4s ease, transform 2.4s ease;
+    transition-delay: 0.2s; /* pequeño retraso antes de empezar */
+  }
+
+  .visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+
+  @foreach ($informacion as $index => $info)
+    <div class="animar-scroll relative flex flex-col md:flex-row items-center gap-12 md:gap-16 border border-white/20 rounded-3xl p-8 md:p-12 shadow-2xl bg-gray-900">
+      
+      <!-- Imagen fija -->
+      <div class="flex-shrink-0 w-full md:w-1/2 -mt-16 md:-mt-24">
+        <img src="{{ asset('imagenes/'.$info['imagen']) }}" 
+             alt="{{ $info['titulo'] }}" 
+             class="w-full h-[400px] md:h-[500px] object-contain rounded-3xl drop-shadow-2xl bg-transparent">
+      </div>
+
+      <!-- Cuadro informativo -->
+      <div class="{{ $info['degradado'] }} flex-1 rounded-3xl p-10 md:p-16 border border-white/20 transform transition duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-3xl">
+        <h3 class="text-3xl md:text-4xl font-extrabold text-white mb-6">{{ $info['titulo'] }}</h3>
+        <p class="text-white/90 text-lg md:text-xl leading-relaxed tracking-wide">{{ $info['texto'] }}</p>
+      </div>
+    </div>
+  @endforeach
+
+  <script>
+    // Efecto de aparición al hacer scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 }); // Aparece cuando el 20% del elemento es visible
+
+    document.querySelectorAll('.animar-scroll').forEach(el => observer.observe(el));
+  </script>
+</section>
+
+
+
+<!-- 🌿 Sección: Importancia de Cuidar los Libros -->
+<section class="max-w-6xl mx-auto px-6 py-20 text-white">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-8 text-white-300">
+    La Importancia de Cuidar los Libros Prestados
+  </h2>
+
+  <p class="mt-4 text-lg text-white bg-gray-600/60 rounded-lg px-6 py-4 inline-block shadow-lg">
+    Cada libro guarda conocimiento y experiencias.  
+    Al cuidarlos, permitimos que muchos más puedan aprender, disfrutar y soñar.
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-10 mt-12">
+    <!-- Tarjeta 1 -->
+    <div class="bg-blue-600 rounded-3xl p-8 flex flex-col items-center text-center shadow-lg hover:-translate-y-2 transition duration-500">
+      <div class="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-300">
+        <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" alt="Cuidar libros" class="w-full h-full object-cover">
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-3">
+        Cuídalos del Daño
+      </h3>
+      <p class="text-white/90">
+        No dobles las páginas ni los mojes. Usa separadores y mantenlos limpios para conservarlos en buen estado.
+      </p>
+    </div>
+
+    <!-- Tarjeta 2 -->
+    <div class="bg-green-600 rounded-3xl p-8 flex flex-col items-center text-center shadow-lg hover:-translate-y-2 transition duration-500">
+      <div class="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-300">
+        <img src="https://cdn-icons-png.flaticon.com/512/4221/4221463.png" alt="Devolver libros a tiempo" class="w-full h-full object-cover">
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-3">
+        Devuélvelos a Tiempo
+      </h3>
+      <p class="text-white/90">
+        Cumplir con la fecha de devolución permite que todos los estudiantes accedan a los mismos recursos sin retrasos.
+      </p>
+    </div>
+
+    <!-- Tarjeta 3 -->
+    <div class="bg-yellow-600 rounded-3xl p-8 flex flex-col items-center text-center shadow-lg hover:-translate-y-2 transition duration-500">
+      <div class="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-300">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Ser responsable" class="w-full h-full object-cover">
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-3">
+        Sé Responsable
+      </h3>
+      <p class="text-white/90">
+        Cuídalos como si fueran tuyos. Con tu responsabilidad, la biblioteca se mantiene ordenada y accesible para todos.
+      </p>
+    </div>
+  </div>
+</section>
+
+@include('chatbot')
+
+
+<!-- Footer -->
+<footer class="bg-black/80 text-white text-center py-6 border-t border-white/20 w-full mt-auto">
+  <p class="text-lg font-semibold">
+    📚 Biblioteca Virtual <span class="text-yellow-400">2025</span> — Todos los derechos reservados
+  </p>
+  <p class="text-sm text-gray-400 mt-1">
+    Desarrollado por <span class="text-pink-400 font-medium">Elvia Huanca</span>
+  </p>
+</footer>
 </body>
 
 </html>
